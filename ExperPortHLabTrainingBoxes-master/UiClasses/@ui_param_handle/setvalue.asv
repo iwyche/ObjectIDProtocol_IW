@@ -1,0 +1,4 @@
+function [uph] = setvalue(uph, value)
+
+   uph.(fieldname) = value;
+   

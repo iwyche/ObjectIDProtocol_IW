@@ -1,0 +1,95 @@
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svobodalab/DHO/behav/!svn/ver/73/trunk/ExperPortStim/Protocols/@stim_timingobj
+END
+ValvesSection.m
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svobodalab/DHO/behav/!svn/ver/27/trunk/ExperPortStim/Protocols/@stim_timingobj/ValvesSection.m
+END
+make_and_upload_state_matrix.m
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svobodalab/DHO/behav/!svn/ver/47/trunk/ExperPortStim/Protocols/@stim_timingobj/make_and_upload_state_matrix.m
+END
+state35.m
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svobodalab/DHO/behav/!svn/ver/27/trunk/ExperPortStim/Protocols/@stim_timingobj/state35.m
+END
+RewardsSection.m
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svobodalab/DHO/behav/!svn/ver/28/trunk/ExperPortStim/Protocols/@stim_timingobj/RewardsSection.m
+END
+TrialTypeSection.m
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svobodalab/DHO/behav/!svn/ver/79/trunk/ExperPortStim/Protocols/@stim_timingobj/TrialTypeSection.m
+END
+SMControlSection.m
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svobodalab/DHO/behav/!svn/ver/27/trunk/ExperPortStim/Protocols/@stim_timingobj/SMControlSection.m
+END
+close.m
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svobodalab/DHO/behav/!svn/ver/27/trunk/ExperPortStim/Protocols/@stim_timingobj/close.m
+END
+TimesSection.m
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svobodalab/DHO/behav/!svn/ver/32/trunk/ExperPortStim/Protocols/@stim_timingobj/TimesSection.m
+END
+AnalysisSection.m
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svobodalab/DHO/behav/!svn/ver/46/trunk/ExperPortStim/Protocols/@stim_timingobj/AnalysisSection.m
+END
+MotorsSection.m
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svobodalab/DHO/behav/!svn/ver/44/trunk/ExperPortStim/Protocols/@stim_timingobj/MotorsSection.m
+END
+SessionTypeSection.m
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svobodalab/DHO/behav/!svn/ver/27/trunk/ExperPortStim/Protocols/@stim_timingobj/SessionTypeSection.m
+END
+SavingSection.m
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svobodalab/DHO/behav/!svn/ver/66/trunk/ExperPortStim/Protocols/@stim_timingobj/SavingSection.m
+END
+NotesSection.m
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svobodalab/DHO/behav/!svn/ver/27/trunk/ExperPortStim/Protocols/@stim_timingobj/NotesSection.m
+END
+stim_timingobj.m
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svobodalab/DHO/behav/!svn/ver/27/trunk/ExperPortStim/Protocols/@stim_timingobj/stim_timingobj.m
+END
+update.m
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svobodalab/DHO/behav/!svn/ver/27/trunk/ExperPortStim/Protocols/@stim_timingobj/update.m
+END

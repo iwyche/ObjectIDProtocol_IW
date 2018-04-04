@@ -1,0 +1,127 @@
+task_periods_per_ms = 6;
+
+%--------------------------------------------
+% ao_chan_offset_in_volts = 0.075;
+ao_chan_offset_in_volts = -0.120; % Changed 13sep11
+ao_chan_max_volts = 10.0;
+ao_offset = (ao_chan_offset_in_volts / ao_chan_max_volts);
+% ao_offset = 0;
+%-------------------------------------------- 
+
+
+% Put these IDs in a Solo global variable...
+wave_id_masking_flash_blue = 2; AO_chan_masking_flash_blue = 1;
+% wave_id_masking_flash_orange = 3; AO_chan_masking_flash_orange = 7;
+wave_id_x_galvo = 4; AO_chan_x_galvo = 2;
+wave_id_y_galvo = 5; AO_chan_y_galvo = 3;
+wave_id_aom_473 = 6; AO_chan_aom_473 = 5;
+% wave_id_aom_594 = 7; AO_chan_aom_594 = 6;
+
+% wave_id_cam_frame = 8; DIO_chan_cam_frame = 9;  % Handled in EmbC program, not here.
+% wave_id_cam_gate = 9; DIO_chan_cam_gate = 8;   % Breakout box port 5.
+wave_id_shutter = 1; DIO_chan_shutter = 11; % Breakout box port 6.
+
+stim_event_record_chan = 3;
+
+%-------------------------------------------------------------------------
+% Define scheduled waves:
+%-------------------------------------------------------------------------
+
+%------------------------
+% Make shutter schedule wave:
+shutterDurationInSec = 2; DIO_shutter_loop = 0;
+schedWv_Shutter1 = [wave_id_shutter -1 -1 DIO_chan_shutter 0 0 shutterDurationInSec 0 DIO_shutter_loop];
+
+%------------------------
+% Build full matrix for DIO scheduled waves:
+digSchedWvAll = schedWv_Shutter1;
+
+%------------------------
+% Make masking flash waveform. Two seconds of 1 ms
+% pulses, like the actual stim. 10 Hz frequency.
+on1 = ones([1 1*task_periods_per_ms]); % 1 ms
+off1 = zeros([1 99*task_periods_per_ms]); % 99 ms
+wv = [on1, off1];
+fullwv = repmat(wv, [1 20]);
+schedWv_MaskFlash1 = [fullwv; zeros([1 numel(fullwv)])];
+
+%------------------------
+% Make x-galvo waveform:
+fullwv = repmat(-.25, [1 2000*task_periods_per_ms]); % 2 sec
+schedWv_XGalvo1 = [fullwv; zeros([1 numel(fullwv)])];
+
+%------------------------
+% Make y-galvo waveform:
+fullwv = zeros([1 2000*task_periods_per_ms]); % 2 sec
+schedWv_YGalvo1 = [fullwv; zeros([1 numel(fullwv)])];
+
+%------------------------
+% Make AOM 473nm waveform: 
+% **** IMPORTANT: stim_dur_473 in globals.c MUST BE SET TO MATCH THE DURATION OF THIS WAVE****
+% THIS IS A HACK TO COMPENSATE FOR COMEDI INABILITY TO CALIBRATE BOARD PROPERLY. THIS IS CURRENTLY
+% DONE BY THE BCONTROL PROTOCOL.
+
+if ismember(next_trial_type,{'Go','Nogo'})
+    fullwv = repmat(ao_offset, [1 1*task_periods_per_ms]); % Dummy; for 'Go','Nogo', this doesn't matter since no stim is given anyway
+
+elseif ~isempty(strfind(next_trial_type,'1_1ms'))  % Single 1 ms pulse
+    fullwv = repmat(0.5, [1 1*task_periods_per_ms]);
+    
+elseif ~isempty(strfind(next_trial_type,'1_1.33ms')) % Single 1.33 ms pulse
+    fullwv = repmat(0.5, [1 (8/6)*task_periods_per_ms]);
+    
+elseif ~isempty(strfind(next_trial_type,'5@40Hz_1ms')) % 5 pulses at 40 Hz, 1 ms each
+    on1 = repmat(0.5, [1 1*task_periods_per_ms]);
+    off1 = repmat(ao_offset, [1 24*task_periods_per_ms]);
+    fullwv = repmat([on1, off1], [1 5]);
+    
+elseif ~isempty(strfind(next_trial_type,'10@40Hz_1ms')) % 10 pulses at 40 Hz, 1 ms each
+    on1 = repmat(0.5, [1 1*task_periods_per_ms]);
+    off1 = repmat(ao_offset, [1 24*task_periods_per_ms]);
+    fullwv = repmat([on1, off1], [1 10]);
+    
+elseif ~isempty(strfind(next_trial_type,'1@40Hz_1.33ms')) % Single 1.33 ms pulse
+    fullwv = repmat(0.5, [1 (8/6)*task_periods_per_ms]);
+    
+elseif ~isempty(strfind(next_trial_type,'2@40Hz_1.33ms')) % Two 1.33 ms pulses at 40 Hz
+    on1 = repmat(0.5, [1 (8/6)*task_periods_per_ms]);
+    off1 = repmat(ao_offset, [1 (142/6)*task_periods_per_ms]);
+    fullwv = [on1, off1, on1]; 
+    
+elseif ~isempty(strfind(next_trial_type,'3@40Hz_1.33ms')) % Three 1.33 ms pulses at 40 Hz
+    on1 = repmat(0.5, [1 (8/6)*task_periods_per_ms]);
+    off1 = repmat(ao_offset, [1 (142/6)*task_periods_per_ms]);
+    fullwv = [on1, off1, on1, off1, on1];
+    
+elseif ~isempty(strfind(next_trial_type,'1@40Hz_2ms')) % Single 2 ms pulse
+    fullwv = repmat(0.5, [1 2*task_periods_per_ms]);
+    
+elseif ~isempty(strfind(next_trial_type,'2@40Hz_2ms')) % Two 2 ms pulses at 40 Hz
+    on1 = repmat(0.5, [1 2*task_periods_per_ms]);
+    off1 = repmat(ao_offset, [1 23*task_periods_per_ms]);
+    fullwv = [on1, off1, on1]; 
+    
+elseif ~isempty(strfind(next_trial_type,'3@40Hz_2ms')) % Three 2 ms pulses at 40 Hz
+    on1 = repmat(0.5, [1 2*task_periods_per_ms]);
+    off1 = repmat(ao_offset, [1 23*task_periods_per_ms]);
+    fullwv = [on1, off1, on1, off1, on1];
+    
+else
+    error('Unrecognized trial type.')
+end
+        
+schedWv_AOM473nm1 = [fullwv; stim_event_record_chan zeros([1 numel(fullwv)-1])];
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Set analog scheduled waves:
+AOLoop = 0;
+machine = SetScheduledWaves(machine, wave_id_masking_flash_blue, AO_chan_masking_flash_blue, AOLoop, schedWv_MaskFlash1);
+machine = SetScheduledWaves(machine, wave_id_x_galvo, AO_chan_x_galvo, AOLoop, schedWv_XGalvo1);
+machine = SetScheduledWaves(machine, wave_id_y_galvo, AO_chan_y_galvo, AOLoop, schedWv_YGalvo1);
+machine = SetScheduledWaves(machine, wave_id_aom_473, AO_chan_aom_473, AOLoop, schedWv_AOM473nm1);
+
+% Set digital scheduled waves:
+DoSimpleCmd(machine,'SET DIO SCHED WAVE NUM COLUMNS 9'); %New FSMServer command "SET DIO SCHED WAVE NUM COLUMNS n" where n must be one of 8, 9, 10, or 11. The 9th col is for looping, 10th for triggering other sched waves, 11 for untriggering other sched waves. To allow looping. Put this somewhere else, doesn't need to be called every trial.
+machine = SetScheduledWaves(machine, digSchedWvAll); % digital scheduled waves.
+

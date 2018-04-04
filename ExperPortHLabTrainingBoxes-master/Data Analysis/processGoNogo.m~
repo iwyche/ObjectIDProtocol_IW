@@ -1,0 +1,36 @@
+%processGoNogo: returns matrix filled running percent correct values as
+%well as indications of new trial and whether individual trials were
+%correct
+
+function [runningPercent, correctData] = processGoNogo(wrappedBehaviorArray)
+wBA = wrappedBehaviorArray;
+numSessions = numel(wBA);
+
+trialMatrix = zeros(numSessions, 1);
+for i = 1:numSessions
+    sessionTrials = numel(wBA{i}.MotorsSection_motor_position);
+    trialMatrix(i, 1) = sessionTrials;
+end 
+totalTrials = sum(trialMatrix);
+
+totalPercentMat = zeros(1, totalTrials);
+brkList = zeros(3, totalTrials); 
+for j = 1:numSessions
+    increment = sum(trialMatrix(0:(j-1),1));
+    currentTrials = trialMatrix(j,1);
+    
+    tempCellPC(1,:) = wBA{j}.AnalysisSection_PercentCorrect(:,1);
+    tempCellHR(1,:) = wBA{j}.AnalysisSection_HR(:,1);
+    tempCellFAR(1,:) = wBA{j}.AnalysisSection_HR;
+    
+    percentMat = cell2Mat(tempCellPC);
+    breakPoint = increment + currentTrials;
+    brkList(1, breakPoint) = 1;  
+    totalPercentMat(1, increment:breakPoint) = percentMat;
+end 
+
+runningPercent.percentages = totalPercentMat;
+runningPercent.sessionBreaks = brkList; 
+
+
+        

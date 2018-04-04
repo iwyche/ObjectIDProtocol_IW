@@ -1,0 +1,11 @@
+- Move wrap_c_file_in_string.m into @poles_disc_stimobj directory.
+- Add second input column pair, but set thresh_func to always return
+    neutral and ignore input beambreaks on it.  Reason for this is
+    that configuring this channel with SetInputEvents() speeds up its 
+    acquistion with readAI(), and we also want to record events triggered
+    by second row of schedule wave to record our stimulations.  This requires
+    a channel and we'll use our second input channel.
+
+Port 5 on breakout bo
+
+

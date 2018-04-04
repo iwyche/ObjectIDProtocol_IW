@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svobodalab/DHO/behav/!svn/ver/73/trunk/ExperPortStim/Protocols/@stim_timingobj/embc
+END
+test_latency.c
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svobodalab/DHO/behav/!svn/ver/27/trunk/ExperPortStim/Protocols/@stim_timingobj/embc/test_latency.c
+END
+globals.c
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svobodalab/DHO/behav/!svn/ver/73/trunk/ExperPortStim/Protocols/@stim_timingobj/embc/globals.c
+END
+globals2.c
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svobodalab/DHO/behav/!svn/ver/27/trunk/ExperPortStim/Protocols/@stim_timingobj/embc/globals2.c
+END
+laser_on_min.c
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svobodalab/DHO/behav/!svn/ver/79/trunk/ExperPortStim/Protocols/@stim_timingobj/embc/laser_on_min.c
+END
+thresh_detect.c
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svobodalab/DHO/behav/!svn/ver/27/trunk/ExperPortStim/Protocols/@stim_timingobj/embc/thresh_detect.c
+END
+laser_on_max.c
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svobodalab/DHO/behav/!svn/ver/79/trunk/ExperPortStim/Protocols/@stim_timingobj/embc/laser_on_max.c
+END

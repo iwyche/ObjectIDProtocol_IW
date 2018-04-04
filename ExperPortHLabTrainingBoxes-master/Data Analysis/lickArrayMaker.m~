@@ -1,0 +1,15 @@
+%% Creates array showing whether or not the mouse in question licked during a trial 
+% Created by J. Sy on 2014-12-4
+% Use on array with mouse data
+
+function [lickArray, trialCount] = lickArrayMaker(x)
+trialCount = numel(x.AnalysisSection_FAR) % Helpfully includes the overall number of trials for your convenience 
+lickArray = zeros(trialCount,1);  
+for i = 1:trialCount 
+    if x.AnalysisSection_NumTrials{i} = 1
+        lickArray(i) = 0
+    elseif x.AnalysisSection_HR{i} > x.AnalysisSection_HR{i-1
+
+
+
+end 

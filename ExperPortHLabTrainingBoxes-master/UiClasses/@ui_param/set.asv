@@ -1,0 +1,5 @@
+function [up] = set(up, fieldname, value)
+
+if strcmp(fieldname, 'value') & ~ischar(value),
+    
+up.(fieldname) = value;

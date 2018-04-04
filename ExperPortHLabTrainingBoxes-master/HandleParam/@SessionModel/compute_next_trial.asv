@@ -1,0 +1,35 @@
+function [] = compute_next_trial(obj)
+
+GetSoloFunctionArgs('func_owner', get_owner(obj), 'func_name', 'SessionModel');    % should now have access to all variables owned by its owner
+
+% struct('training_stages', {{}}, ...
+%    'current_train_stage', 1, ...
+%    'train_string_COL', 1, ...
+%    'completion_test_COL', 2, ...
+%    'is_complete_COL', 3, ...
+%    'param_owner', '' );
+
+
+curr = obj.current_train_stage;
+ts = get_training_stages(obj);
+if curr <= rows(ts) & ~ts(curr, obj.is_complete_COL)
+    eval_stmt = ts(obj.current_train_stage, obj.train_string_COL);
+    try,
+    eval(eval_stmt);
+    catch
+        error('Unable to evaluate st
+    
+    test_complete = ts(obj.current_train_stage, obj.completion_test_COL);
+    eval(['done = ' test_complete]);
+    if done
+        set_current_training_stage(obj, curr+1);
+    
+else
+    return; % do nothing
+end;
+
+
+
+
+
+
