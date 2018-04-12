@@ -151,8 +151,8 @@ switch action
         
         % Angle
         next_row(y);
-        NumeditParam(obj, 'pole_angle', 45, x, y, 'label', ...
-            'Angle','TooltipString','Angle will be the same for left and right choice. Only the sign will differ');
+        NumeditParam(obj, 'rt_angle', 0, x, y, 'label', ...
+            'Angle','TooltipString','Angle will be the same for go and nogo choice. Only the sign will differ');
 
         %-----------------------------------------------------------
         
@@ -172,7 +172,7 @@ switch action
         x = parentfig_x; y = parentfig_y;
         set(0,'CurrentFigure',value(myfig));
         
-        next_absolute_angle = 90;
+        next_absolute_angle = 90; %what's happening here?
         SoloFunctionAddVars('make_and_upload_state_matrix', 'ro_args', {'next_absolute_angle'}); 
         
         return;
@@ -180,36 +180,41 @@ switch action
     case 'move_next_side', % --------- CASE MOVE_NEXT_SIDE -----
        
         next_side = SidesSection(obj,'get_next_side');
-        next_pole_angle = value(round(double(pole_angle))) ;
+        next_rt_angle = value(round(double(rt_angle))) ;
         
-        if strcmp(TaskTarget,'Angle')
+        if strcmp(TaskTarget,'Object ID')
             if next_side == 'r'
-                next_pole_sign = 'r'; 
+                next_obj_sign = 'r'; 
             elseif next_side == 'l'
-                next_pole_sign = 'l'; 
+                next_obj_sign = 'l'; 
             else
                 error('un-recognized type of choice (left or right)');
             end
-            if rand < 0.5
-                next_pole_dist = value(round(double(near_dist)));
-            else
-                next_pole_dist = value(round(double(far_dist)));
-            end
-        elseif strcmp(TaskTarget,'RadialDistance')
-            if next_side == 'r'
-                next_pole_dist = value(round(double(far_dist)));
-            elseif next_side == 'l'
-                next_pole_dist = value(round(double(near_dist)));
-            else
-                error('un-recognized type of choice (left or right)');
-            end
-            if rand < 0.5
-                next_pole_sign = 'l'; 
-            else
-                next_pole_sign = 'r'; 
-            end
+            
+%             Don't need to change pole distance in this task
+%             if rand < 0.5
+%                 next_pole_dist = value(round(double(near_dist)));
+%             else
+%                 next_pole_dist = value(round(double(far_dist)));
+%             end
+%             
+%         elseif strcmp(TaskTarget,'RadialDistance')
+%             
+%             if next_side == 'r'
+%                 next_pole_dist = value(round(double(far_dist)));
+%             elseif next_side == 'l'
+%                 next_pole_dist = value(round(double(near_dist)));
+%             else
+%                 error('un-recognized type of choice (left or right)');
+%             end
+%             
+%             if rand < 0.5
+%                 next_obj_sign = 'l'; 
+%             else
+%                 next_obj_sign = 'r'; 
+%             end
         else
-            error('un-recognized type for task (angle or radial distance)');
+            error('un-recognized type for task (object ID)');
         end
             
         half_point = round(value(far_dist+near_dist)/2);
@@ -227,12 +232,12 @@ switch action
         
         previous_pole_positions(n_started_trials) = next_pole_dist;        
         
-        if next_pole_sign == 'r'
-            next_absolute_angle = next_pole_angle;
-        elseif next_pole_sign == 'l'
-            next_absolute_angle = 180 - next_pole_angle;
+        if next_obj_sign == 'r'
+            next_absolute_angle = next_rt_angle;
+        elseif next_obj_sign == 'l'
+            next_absolute_angle = 180 - next_rt_angle;
         else
-            error('un-recognized pole angle sign')
+            error('un-recognized rotational angle sign')
         end
         SoloFunctionAddVars('make_and_upload_state_matrix', 'ro_args', {'next_absolute_angle'});      
         

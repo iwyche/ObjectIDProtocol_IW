@@ -31,6 +31,8 @@
 %          left or 'r' for right.
 %
 
+% Lines 198-210 are where we need to make changes for object ID protocol
+
 function [x, y] = MotorsSection(obj, action, x, y)
 
 GetSoloFunctionArgs;
@@ -65,7 +67,7 @@ switch action
         SoloParamHandle(obj, 'lateral_motor_num', 'value', 2);
         
         % List of pole positions
-        SoloParamHandle(obj, 'previous_pole_positions', 'value', []);        
+        SoloParamHandle(obj, 'previous_rt_positions', 'value', []);        
                 
         
         % Set limits in microsteps for actuator. Range of actuator is greater than range of
@@ -134,20 +136,20 @@ switch action
         
         %--------------- extreme positions for the multi-pole task --------------------------------
         next_row(y);
-        NumeditParam(obj, 'no_pole_position_easy', 140000, x, y, 'label', ...
+        NumeditParam(obj, 'no_rt_position_easy', 0, x, y, 'label', ...
             '"No" position','TooltipString','No trial position in microsteps.');
         
         next_row(y);
-        NumeditParam(obj, 'yes_pole_position_easy', 50000, x, y, 'label', ...
+        NumeditParam(obj, 'yes_rt_position_easy', 0, x, y, 'label', ...
             '"Yes" position','TooltipString','Yes trial position in microsteps.');
 
-        next_row(y);
-        NumeditParam(obj, 'num_of_pole_position', 5, x, y, 'label', ...
+        next_row(y); % num_of_rt_position is number of possible objects to present
+        NumeditParam(obj, 'num_of_rt_position', 3, x, y, 'label', ...
             'Pole positions','TooltipString','Number of Yes/No pole position');
 
         % switch between 2 pole task and multi-pole
         next_row(y);
-        ToggleParam(obj, 'multi_go_position', 0, x, y, 'label', 'Multi Go Positions',...
+        ToggleParam(obj, 'multi_go_position', 1, x, y, 'label', 'Multi Go Positions',...
             'TooltipString', 'Multiple pole position will be used.');
         %-----------------------------------------------------------
         
@@ -180,41 +182,44 @@ switch action
 
     case 'move_next_side', % --------- CASE MOVE_NEXT_SIDE -----
        
-        next_side = SidesSection(obj,'get_next_side');
-        if value(multi_go_position)==0
-
-            if next_side == 'r'
-                next_pole_position = value(yes_pole_position_easy);
-            elseif next_side == 'l'
-                next_pole_position = value(no_pole_position_easy);
-            else
-                error('un-recognized type for next_side');
-            end
-
-            half_point = round((value(no_pole_position_easy)-value(yes_pole_position_easy))/2 + value(yes_pole_position_easy));
-
-        else
-            % spacing between pole position
-            pole_pos_interval = round((value(no_pole_position_easy)-value(yes_pole_position_easy))/(value(num_of_pole_position)*2-1));
-
-            if next_side == 'r'
-                pole_ind = randsample(value(num_of_pole_position),1)-1;
-                next_pole_position = pole_ind*pole_pos_interval + value(yes_pole_position_easy);
-            elseif next_side == 'l'
-                pole_ind = randsample(value(num_of_pole_position),1)-1;
-                next_pole_position = value(no_pole_position_easy) - pole_ind*pole_pos_interval;
+        next_side = SidesSection(obj,'get_next_side'); % decides if go or nogo should be next
+%         if value(multi_go_position)==0
+% 
+%             if next_side == 'r'
+%                 next_rt_position = value(yes_rt_position_easy);
+%             elseif next_side == 'l'
+%                 next_rt_position = value(no_rt_position_easy);
+%             else
+%                 error('un-recognized type for next_side');
+%             end
+% 
+%             half_point = round((value(no_rt_position_easy)-value(yes_rt_position_easy))/2 + value(yes_rt_position_easy));
+% 
+%         else
+            % spacing between pole positions
+            pole_pos_interval = round((value(no_rt_position_easy)-value(yes_rt_position_easy))/(value(num_of_rt_position)*2-1));
+            % pole_pos_interval=(*steps per rotation*)/num_of_rt_positions;
+            
+            if next_side == 'r' % go trial
+                pole_ind = randsample(value(num_of_rt_position-1),1); % generates 1 integer between 1 and the number of go positions
+                next_rt_position = pole_ind*pole_pos_interval + value(yes_rt_position_easy);
+%                 next_rt_position = pole_ind*pole_pos_interval; % calculates how many steps to rotate in positive direction
+            elseif next_side == 'l' % nogo trial
+                pole_ind = 0; %randsample(value(num_of_rt_position),1)-1;
+                next_rt_position = value(no_rt_position_easy) - pole_ind*pole_pos_interval;
+%                 next_rt_position = -pole_ind*pole_pos_interval; % calculates how many steps to rotate in negative direction
             else
                 error('un-recognized type for next_side');
             end
 
             % not really the half point, but a random position btw "yes" and "no" position to make motor movement unpredictable
-            half_point = round(rand(1)*(value(no_pole_position_easy)-value(yes_pole_position_easy))/1000)*1000 + value(yes_pole_position_easy);
-
-        end
+%             half_point = round(rand(1)*(value(no_rt_position_easy)-value(yes_rt_position_easy))/1000)*1000 + value(yes_rt_position_easy);
+            half_point = 0;
+%         end
                 
         
         tic
-        move_absolute_sequence(motors,{half_point,next_pole_position},value(motor_num));
+        move_absolute_sequence(motors,{half_point,next_rt_position},value(motor_num)); % moves to half point, then next motor position
         movetime = toc
         if movetime<value(motor_move_time) % Should make this min-ITI a SoloParamHandle
             pause( value(motor_move_time)-movetime);
@@ -223,38 +228,38 @@ switch action
         MotorsSection(obj,'read_positions');        
         trial_ready_times.value = clock;  
         
-        previous_pole_positions(n_started_trials) = next_pole_position;        
+        previous_rt_positions(n_started_trials) = next_rt_position;        
         
 
         return;
         
 
     
-    case 'get_previous_pole_position',   % --------- CASE get_next_pole_position ------
-        if isempty(value(previous_pole_positions))
+    case 'get_previous_rt_position',   % --------- CASE get_next_rt_position ------
+        if isempty(value(previous_rt_positions))
             x = nan;
         else
-            x = previous_pole_positions(length(previous_pole_positions));
+            x = previous_rt_positions(length(previous_rt_positions));
         end
         return;
 
-    case 'get_all_previous_pole_positions',   % --------- CASE get_next_pole_position ------
-        x = value(previous_pole_positions);
+    case 'get_all_previous_rt_positions',   % --------- CASE get_next_rt_position ------
+        x = value(previous_rt_positions);
         return;
 
-    case 'get_yes_pole_position_easy'
-        x = value(yes_pole_position_easy);
+    case 'get_yes_rt_position_easy'
+        x = value(yes_rt_position_easy);
         return
 
-    case 'get_no_pole_position_easy'
-        x = value(no_pole_position_easy);
+    case 'get_no_rt_position_easy'
+        x = value(no_rt_position_easy);
         return
 
-    case 'get_num_of_pole_position'
+    case 'get_num_of_rt_position'
         if value(multi_go_position)==0
             x = 1;
         else
-            x = value(num_of_pole_position);
+            x = value(num_of_rt_position);
         end
         return
         
@@ -332,16 +337,16 @@ switch action
         
         
         
-    case 'get_yes_pole_position_easy'
-        x = value(yes_pole_position_easy);
+    case 'get_yes_rt_position_easy'
+        x = value(yes_rt_position_easy);
         return
         
-    case 'get_no_pole_position_easy'
-        x = value(no_pole_position_easy);
+    case 'get_no_rt_position_easy'
+        x = value(no_rt_position_easy);
         return
 
-    case 'get_num_of_pole_position'
-        x = value(num_of_pole_position);
+    case 'get_num_of_rt_position'
+        x = value(num_of_rt_position);
         return
         
         
